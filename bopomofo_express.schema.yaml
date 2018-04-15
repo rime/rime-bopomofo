@@ -4,7 +4,7 @@
 schema:
   schema_id: bopomofo_express
   name: 注音·快打模式
-  version: "2.0"
+  version: "2.1"
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
@@ -119,14 +119,14 @@ reverse_lookup:
     - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
   comment_format:
     - xform/e?r5$/er5/
-    - xform/([jqx])u/$1v/
-    - xform/yu/v/
-    - xform/yi?/i/
-    - xform/wu?/u/
     - xform/iu/iou/
     - xform/ui/uei/
     - xform/ong/ung/
-    - xform/([iu])n/$1en/
+    - xform/^yi?/i/
+    - xform/^wu?/u/
+    - xform/iu/v/
+    - xform/^([jqx])u/$1v/
+    - xform/([iuv])n/$1en/
     - xform/zh/Z/
     - xform/ch/C/
     - xform/sh/S/
