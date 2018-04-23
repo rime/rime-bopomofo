@@ -4,16 +4,16 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: "2.2"
+  version: '2.2'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
     注音符號輸入，採用「大千式」鍵盤排列。
 
     本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
-    空格鍵輸入第一聲，標記爲「ˉ」。
+    空格鍵輸入第一聲，標記爲「ˉ」。也可省略聲調或韻母部份。
 
-    請配合 librime>=0.9.8 使用。
+    請配合 librime>=1.3.0 使用。
 
   dependencies:
     - stroke
@@ -70,7 +70,15 @@ speller:
   finals: " 6347"
   delimiter: "'"
   use_space: true
-  algebra:
+  algebra: []
+  __patch:
+    - algebra/+: {__include: spelling_rules/pinyin_to_zhuyin}
+    # - algebra/+: {__include: spelling_rules/free_order_syllable}
+    - algebra/+: {__include: spelling_rules/abbreviations}
+    - algebra/+: {__include: spelling_rules/keyboard_layout}
+
+spelling_rules:
+  pinyin_to_zhuyin:
     - erase/^xx$/
     - xform/^m(\d)$/mu$1/  # 呣
     - xform/^r5$/er5/  # 〜兒
@@ -97,13 +105,16 @@ speller:
     - xform/er/R/
     - xform/eh/E/
     - xform/([iv])e/$1E/
+  free_order_syllable:
     - derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/
     - derive/([iuv])([aoeEAIOUMNKGR])/$2$1/
     - derive/([bpmfdtnlgkhjqxZCSrzcs])([aoeEAIOUMNKGR])/$2$1/
     - derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/
+  abbreviations:
     - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+$/$1/
     - abbrev/^([A-Za-z]+)\d$/$1/
     - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\d)$/$1$2/
+  keyboard_layout:
     - 'xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|'
 
 translator:
