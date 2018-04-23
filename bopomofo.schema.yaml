@@ -4,7 +4,7 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: "2.1"
+  version: "2.2"
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
@@ -16,7 +16,7 @@ schema:
     請配合 librime>=0.9.8 使用。
 
   dependencies:
-    - cangjie5
+    - stroke
 
 switches:
   - name: ascii_mode
@@ -24,8 +24,14 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - name: simplification
-    states: [ 漢字, 汉字 ]
+  - options:
+      - zh_hant
+      - zh_hans
+      - zh_hant_tw
+    states:
+      - 傳統漢字
+      - 简化字
+      - 臺灣正體
   - name: ascii_punct
     states: [ 。，, ．， ]
 
@@ -51,7 +57,8 @@ engine:
     - reverse_lookup_translator
     - script_translator
   filters:
-    - simplifier
+    - simplifier@zh_hans
+    - simplifier@zh_hant_tw
     - uniquifier
 
 menu:
@@ -114,11 +121,11 @@ custom_phrase:
   initial_quality: 1
 
 reverse_lookup:
-  dictionary: cangjie5
+  dictionary: stroke
   enable_completion: true
   prefix: "`"
   suffix: "'"
-  tips: 〔倉頡〕
+  tips: 〔筆畫〕
   preedit_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
   comment_format:
@@ -226,3 +233,15 @@ recognizer:
     uppercase: "^[A-Z][-_+.'0-9A-Za-z]*$"
     url: "^(www[.]|https?:|ftp:|mailto:).*$"
     reverse_lookup: "`[a-z]*'?$"
+
+zh_hans:
+  option_name: zh_hans
+  opencc_config: t2s.json
+  tips: all
+  excluded_types: [ reverse_lookup ]
+
+zh_hant_tw:
+  option_name: zh_hant_tw
+  opencc_config: t2tw.json
+  tips: none
+  excluded_types: [ reverse_lookup ]
