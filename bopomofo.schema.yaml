@@ -24,8 +24,14 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - name: simplification
-    states: [ 漢字, 汉字 ]
+  - options:
+      - zh_hant
+      - zh_hans
+      - zh_hant_tw
+    states:
+      - 傳統漢字
+      - 简化字
+      - 臺灣字形
 
 engine:
   processors:
@@ -49,7 +55,8 @@ engine:
     - reverse_lookup_translator
     - script_translator
   filters:
-    - simplifier
+    - simplifier@zh_hans
+    - simplifier@zh_hant_tw
     - uniquifier
 
 menu:
@@ -195,3 +202,15 @@ recognizer:
     uppercase: "^[A-Z][-_+.'0-9A-Za-z]*$"
     url: "^(www[.]|https?:|ftp:|mailto:).*$"
     reverse_lookup: "`[a-z]*'?$"
+
+zh_hans:
+  option_name: zh_hans
+  opencc_config: t2s.json
+  tips: all
+  excluded_types: [ reverse_lookup ]
+
+zh_hant_tw:
+  option_name: zh_hant_tw
+  opencc_config: t2tw.json
+  tips: none
+  excluded_types: [ reverse_lookup ]
