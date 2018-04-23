@@ -4,7 +4,7 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: '3.0'
+  version: "3.1"
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
@@ -26,16 +26,22 @@ switches:
   - name: ascii_mode
     reset: 0
     states: [ 中文, 西文 ]
+    abbrev: [ 中, Ａ ]
   - name: full_shape
     states: [ 半角, 全角 ]
   - options:
       - zh_hant
       - zh_hans
+      - zh_hant_hk
       - zh_hant_tw
     states:
       - 傳統漢字
       - 简化字
+      - 香港字形
       - 臺灣字形
+    abbrev: [ 漢, 简, 港, 臺 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
 
 engine:
   processors:
@@ -60,6 +66,7 @@ engine:
     - script_translator
   filters:
     - simplifier@zh_hans
+    - simplifier@zh_hant_hk
     - simplifier@zh_hant_tw
     - uniquifier
 
@@ -190,6 +197,7 @@ key_binder:
     - { when: has_menu, accept: Shift+asterisk, send: KP_8 }
     - { when: has_menu, accept: Shift+parenleft, send: KP_9 }
     - { when: has_menu, accept: Shift+parenright, send: KP_0 }
+
 recognizer:
   patterns:
     uppercase: "^[A-Z][-_+.'0-9A-Za-z]*$"
@@ -200,6 +208,12 @@ zh_hans:
   option_name: zh_hans
   opencc_config: t2s.json
   tips: all
+  excluded_types: [ reverse_lookup ]
+
+zh_hant_hk:
+  option_name: zh_hant_hk
+  opencc_config: t2hk.json
+  tips: none
   excluded_types: [ reverse_lookup ]
 
 zh_hant_tw:

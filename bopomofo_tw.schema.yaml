@@ -5,13 +5,13 @@ __include: bopomofo.schema:/
 
 # 默認的opencc字形轉換選項設爲臺灣字形標準
 __patch:
-  - switches/@2/reset: 2
+  - switches/@2/reset: 3
   - bopomofo_tw.custom:/patch?
 
 schema:
   schema_id: bopomofo_tw
   name: 注音·臺灣正體
-  version: '3.0'
+  version: '3.1'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
