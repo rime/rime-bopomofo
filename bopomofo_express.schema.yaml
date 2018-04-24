@@ -16,15 +16,15 @@ schema:
     本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
     空格鍵輸入第一聲，標記爲「ˉ」。也可省略聲調或韻母部份。
 
-    請配合 librime>=1.3.0 使用。
+    請配合 librime>=1.3.2 使用。
 
 translator:
   prism: bopomofo_express
 
 speller:
-  algebra: []
-  __patch:
-    - algebra/+: {__include: 'bopomofo.schema:/spelling_rules/pinyin_to_zhuyin'}
-    - algebra/+: {__include: 'bopomofo.schema:/spelling_rules/free_order_syllable'}
-    - algebra/+: {__include: 'bopomofo.schema:/spelling_rules/abbreviations'}
-    - algebra/+: {__include: 'bopomofo.schema:/spelling_rules/keyboard_layout'}
+  algebra:
+    __patch:
+      - bopomofo_spelling_rules:/pinyin_to_zhuyin
+      - bopomofo_spelling_rules:/free_order_syllable
+      - bopomofo_spelling_rules:/abbreviations
+      - bopomofo_spelling_rules:/keyboard_layout
