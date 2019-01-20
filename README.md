@@ -2,7 +2,7 @@
 
 配方： ℞ **`bopomofo`**
 
-[Rime](http://rime.im) 注音輸入方案
+[Rime](https://rime.im) 注音輸入方案
 
 ## 安裝
 
