@@ -16,7 +16,7 @@ schema:
     請配合 librime>=1.3 使用。
 
   dependencies:
-    - cangjie5
+    - stroke
 
 switches:
   - name: ascii_mode
@@ -83,13 +83,13 @@ custom_phrase:
   initial_quality: 1
 
 reverse_lookup:
-  dictionary: cangjie5
+  dictionary: stroke
   enable_completion: true
   prefix: "`"
   suffix: "'"
-  tips: 〔倉頡〕
+  tips: 〔筆畫〕
   preedit_format:
-    - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+    - xlit/hspnz/一丨丿丶乙/
   comment_format:
     - xform/e?r5$/er5/
     - xform/iu/iou/
