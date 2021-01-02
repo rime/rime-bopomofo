@@ -9,6 +9,7 @@
 本方案依賴於
 
   - [地球拼音](https://github.com/rime/rime-terra-pinyin) ℞ **`terra-pinyin`**
+  - `librime>=1.3`
 
 [東風破](https://github.com/rime/plum) 安裝口令： `bash rime-install bopomofo terra-pinyin`
 
