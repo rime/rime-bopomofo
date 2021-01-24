@@ -6,7 +6,7 @@ __include: bopomofo.schema:/
 # 默認的opencc字形轉換選項設爲臺灣字形標準
 __patch:
   - switches/@2/reset: 2
-  - bopomofo_tw.custom:/?
+  - bopomofo_tw.custom:/patch?
 
 schema:
   schema_id: bopomofo_tw
