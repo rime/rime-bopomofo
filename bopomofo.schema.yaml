@@ -4,7 +4,7 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: '2.3'
+  version: '2.4'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
@@ -214,3 +214,9 @@ zh_hant_tw:
   opencc_config: t2tw.json
   tips: none
   excluded_types: [ reverse_lookup ]
+
+__patch:
+  # 使用八股文語言模型
+  - grammar:/hant?
+  # 用家自選配置
+  - bopomofo.custom:/patch?
