@@ -107,6 +107,7 @@ reverse_lookup:
     - xform/iu/v/
     - xform/^([jqx])u/$1v/
     - xform/([iuv])n/$1en/
+    - xform/^([zcsr]h?)i/$1/
     - xform/zh/Z/
     - xform/ch/C/
     - xform/sh/S/
