@@ -3,16 +3,19 @@
 schema:
   schema_id: detenele
   name: 動態能力注音
-  version: "0.3"
+  version: "0.4"
   author:
     - 居戎氏
   description: |
     動態切換聲母、韻母層級的注音鍵盤。
-    小寫：聲母 / 大寫(Shift)：韻母及聲調。
-    零聲母音節，以大寫的韻母鍵起首；
-    其他音節自動識別聲母、韻母、聲調，無須切換 Shift。
-    聲調使用符號鍵：; (1) ' (2) , (3) . (4) / (5)。
-    符號鍵即為音節分隔符，無須額外的隔音符號。
+
+    小寫：聲母；大寫(Shift)：韻母及聲調。
+    聲調使用字母鍵：V (1) B (2) N (3) M (4) P (5)。
+
+    零聲母：q (例：<an> = qs)，或以大寫的韻母鍵起首；
+    非零聲母音節自動識別聲母、韻母、聲調，無須切換 Shift。
+
+    簡拼：省略聲調、僅輸入聲母、輸入聲母+聲調。
   dependencies:
     - terra_pinyin
 
@@ -51,29 +54,32 @@ engine:
     - uniquifier
 
 speller:
-  # 字母表：加入符號鍵 ; ' , . /
-  alphabet: "zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA;',./"
-  delimiter: " "
+  # 字母表
+  alphabet: "zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA"
+  delimiter: " '"
   
-  initials: 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLMN'
+  initials: 'qwertyuiopasdfghjklzxcvbnmWERTYUIOSDFGHJKL'
   
-  # 符號鍵作為強制終止符 (Finals)
+  # 符號鍵作為強制終止符
   # 這保證了輸入這些符號時，音節立即切分
-  finals: ";',./"
+  finals: "VBNMP"
 
   algebra:
     # ============================================================
     # 1. 拼音預處理
     # ============================================================
     # 聲調轉碼 -> 符號
-    - "xform|1$|;|"
-    - "xform|2$|'|"
-    - "xform|3$|,|"
-    - "xform|4$|.|"
-    - "xform|5$|/|"
+    - xform|1$|V|
+    - xform|2$|B|
+    - xform|3$|N|
+    - xform|4$|M|
+    - xform|5$|P|
 
     # 零聲母與拼音還原
-    - "xform|^r([;',./])$|er$1|"
+    # 注意：r (er) 也是零聲母的一種
+    - xform/^r([VBNMP])$/er$1/
+    # 零聲母處理：在 a, o, e 開頭的音節前插入 Q
+    - derive/^([aoe])/Q$1/
     - xform/([jqx])u/$1v/
     - xform/^yu/v/
     - xform/^yi?/i/
@@ -90,7 +96,7 @@ speller:
     - xform/^zhi?/Z/
     - xform/^chi?/C/
     - xform/^shi?/S/
-    - "xform|^([zcsr])i([;',./])|$1$2|"
+    - xform/^([zcsr])i([VBNMP])/$1$2/
 
     # ============================================================
     # 2. 嚴格映射
@@ -146,60 +152,71 @@ speller:
     - xform/^Z/z/
     - xform/^C/x/
     - xform/^S/c/
+    - xform/^Q/q/
 
     - xform/A/S/
 
     # ============================================================
-    # 4. 簡拼與聲調
-    # ============================================================
-    - abbrev/^([wertyuioasdfghzxcvbnm]).+$/$1/
-
-    # 省略韻母，保留聲調
-    - "abbrev|^([wertyuioasdfgh]).+([;',./])$|$1$2|"
-
-    # 省略聲調
-    - "derive|^(.+)[;',./]$|$1|"
-
-    # ============================================================
-    # 5. 連鎖動態衍生
+    # 4. 連鎖動態衍生
     # ============================================================
     - derive/^J/j/
     - derive/^K/k/
     - derive/^L/l/
 
-    - "derive!^(.)([WERTYUIOSDFGHJKL]+)([;',./]?)$!$1\\L$2\\E$3!"
+    # 支持小寫輸入韻母、聲調
+    - derive/^(.)([WERTYUIOSDFGHJKL]+)([VBNMP]?)$/$1\L$2\E$3/
+    - derive/^(.*)([VBNMP])$/$1\L$2\E/
+
+    # ============================================================
+    # 5. 簡拼與聲調
+    # ============================================================
+    - abbrev/^([qwertyuioasdfghzxcvbnm]).+$/$1/
+
+    # 省略韻母，保留聲調
+    - abbrev/^([qwertyuioasdfghzxcvbnm]).*([VBNMP])$/$1$2/
+    - abbrev/^([qwertyuioasdfghzxcvbnm]).*([VBNMP])$/$1\L$2\E/
+
+    # 省略聲調
+    - derive/^(.+)[VBNMP]$/$1/
 
 translator:
   dictionary: terra_pinyin
   prism: detenele
   preedit_format:
     # 顯示優化：符號 -> 注音聲調
-    - "xform!;([ ]|$)!ˉ$1!"
-    - "xform!'([ ]|$)!ˊ$1!"  # 單引號顯示為二聲
-    - "xform!,([ ]|$)!ˇ$1!"
-    - "xform![.]([ ]|$)!ˋ$1!"
-    - "xform!/([ ]|$)!˙$1!"
-    
+    - "xform/V([ ']|$)/ˉ$1/"
+    - "xform/B([ ']|$)/ˊ$1/"
+    - "xform/N([ ']|$)/ˇ$1/"
+    - "xform/M([ ']|$)/ˋ$1/"
+    - "xform/[Pp]([ ']|$)/˙$1/"
+    - "xform/([A-Za-z])v([ ']|$)/$1ˉ$2/"
+    - "xform/([A-Za-z])b([ ']|$)/$1ˊ$2/"
+    - "xform/([A-Za-z])n([ ']|$)/$1ˇ$2/"
+    - "xform/([A-Za-z])m([ ']|$)/$1ˋ$2/"
+
+    # 零聲母 Q 顯示
+    - xform/q/〇/
+
     # 聲母
-    - xform/(^|[ ])w/$1ㄅ/
-    - xform/(^|[ ])e/$1ㄆ/
-    - xform/(^|[ ])r/$1ㄇ/
-    - xform/(^|[ ])t/$1ㄈ/
-    - xform/(^|[ ])y/$1ㄉ/
-    - xform/(^|[ ])u/$1ㄊ/
-    - xform/(^|[ ])i/$1ㄋ/
-    - xform/(^|[ ])o/$1ㄌ/
+    - "xform/(^|[ '])w/$1ㄅ/"
+    - "xform/(^|[ '])e/$1ㄆ/"
+    - "xform/(^|[ '])r/$1ㄇ/"
+    - "xform/(^|[ '])t/$1ㄈ/"
+    - "xform/(^|[ '])y/$1ㄉ/"
+    - "xform/(^|[ '])u/$1ㄊ/"
+    - "xform/(^|[ '])i/$1ㄋ/"
+    - "xform/(^|[ '])o/$1ㄌ/"
     - xform/a/ㄍ/
-    - xform/(^|[ ])s/$1ㄎ/
-    - xform/(^|[ ])d/$1ㄏ/
-    - xform/(^|[ ])f/$1ㄐ/
-    - xform/(^|[ ])g/$1ㄑ/
-    - xform/(^|[ ])h/$1ㄒ/
-    - xform/(^|[ ])z/$1ㄓ/
-    - xform/(^|[ ])x/$1ㄔ/
-    - xform/(^|[ ])c/$1ㄕ/
-    - xform/(^|[ ])v/$1ㄖ/
-    - xform/(^|[ ])b/$1ㄗ/
+    - "xform/(^|[ '])s/$1ㄎ/"
+    - "xform/(^|[ '])d/$1ㄏ/"
+    - "xform/(^|[ '])f/$1ㄐ/"
+    - "xform/(^|[ '])g/$1ㄑ/"
+    - "xform/(^|[ '])h/$1ㄒ/"
+    - "xform/(^|[ '])z/$1ㄓ/"
+    - "xform/(^|[ '])x/$1ㄔ/"
+    - "xform/(^|[ '])c/$1ㄕ/"
+    - "xform/(^|[ '])v/$1ㄖ/"
+    - "xform/(^|[ '])b/$1ㄗ/"
     - xform/n/ㄘ/
     - xform/m/ㄙ/
     # 介音
@@ -226,11 +243,3 @@ punctuator:
 
 key_binder:
   import_preset: default
-  bindings:
-    # 釋放所有聲調鍵的原有功能
-    - { when: paging, accept: comma, send: comma }
-    - { when: has_menu, accept: comma, send: comma }
-    - { when: has_menu, accept: period, send: period }
-    - { when: has_menu, accept: slash, send: slash }
-    - { when: has_menu, accept: semicolon, send: semicolon }
-    - { when: has_menu, accept: apostrophe, send: apostrophe }
