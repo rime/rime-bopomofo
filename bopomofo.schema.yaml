@@ -4,16 +4,20 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: '2.4'
+  version: '3.0'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
     注音符號輸入，採用「大千式」鍵盤排列。
 
-    本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
-    空格鍵輸入第一聲，標記爲「ˉ」。
+    本方案採用「無模式」設計，以 Shift+數字鍵選字，
+    或以 Tab、方向鍵切換候選字，回車鍵上屏。
 
-    請配合 librime>=1.3 使用。
+    空格鍵輸入第一聲，標記爲「ˉ」。可省略聲調、韻母。
+
+    輸入逗號「，」句號「。」須輔以 Shift 鍵。
+
+    請配合 librime>=1.16 使用。
 
   dependencies:
     - stroke
@@ -60,7 +64,7 @@ engine:
     - uniquifier
 
 menu:
-  alternative_select_keys: "ABCDEFGHIJ"
+  alternative_select_labels: ['⇧1', '⇧2', '⇧3', '⇧4', '⇧5', '⇧6', '⇧7', '⇧8', '⇧9', '⇧0']
 
 speller:
   alphabet: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'
@@ -146,15 +150,15 @@ punctuator:
     "`" : "`"
     "~" : "~"
     "!" : { commit: ！ }
-    "@" : "@"
-    "#" : "#"
+    "@" : { commit: "@" }
+    "#" : { commit: "#" }
     "%" : [ "%", ％, "°", "℃" ]
     "$" : [ ￥, "$", "€", "£", "¥", "¢", "¤" ]
     "^" : { commit: …… }
-    "&" : "&"
+    "&" : { commit: "&" }
     "*" : [ "*", ＊, ·, ・, ×, ※, ❂ ]
-    "(" : （
-    ")" : ）
+    "(" : { commit: （ }
+    ")" : { commit: ） }
     "_" : [ ——, －, "-" ]
     "+" : "+"
     "=" : "="
@@ -166,6 +170,7 @@ punctuator:
 editor:
   bindings:
     space: toggle_selection
+    Tab: toggle_selection
 
 key_binder:
   import_preset: default
@@ -175,10 +180,18 @@ key_binder:
     - { when: has_menu, accept: minus, send: minus }      # ㄦ
     - { when: paging, accept: minus, send: Page_Up }
     - { when: has_menu, accept: equal, send: Page_Down }
-
+    - { when: has_menu, accept: Shift+exclam, send: KP_1 }
+    - { when: has_menu, accept: Shift+at, send: KP_2 }
+    - { when: has_menu, accept: Shift+numbersign, send: KP_3 }
+    - { when: has_menu, accept: Shift+dollar, send: KP_4 }
+    - { when: has_menu, accept: Shift+percent, send: KP_5 }
+    - { when: has_menu, accept: Shift+asciicircum, send: KP_6 }
+    - { when: has_menu, accept: Shift+ampersand, send: KP_7 }
+    - { when: has_menu, accept: Shift+asterisk, send: KP_8 }
+    - { when: has_menu, accept: Shift+parenleft, send: KP_9 }
+    - { when: has_menu, accept: Shift+parenright, send: KP_0 }
 recognizer:
   patterns:
-    email: "^[a-z][-_.0-9a-z]*@.*$"
     uppercase: "^[A-Z][-_+.'0-9A-Za-z]*$"
     url: "^(www[.]|https?:|ftp:|mailto:).*$"
     reverse_lookup: "`[a-z]*'?$"
