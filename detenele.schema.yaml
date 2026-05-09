@@ -3,7 +3,7 @@
 schema:
   schema_id: detenele
   name: 動態能力注音
-  version: "0.4"
+  version: "0.5"
   author:
     - 居戎氏
   description: |
@@ -16,19 +16,27 @@ schema:
     非零聲母音節自動識別聲母、韻母、聲調，無須切換 Shift。
 
     簡拼：省略聲調、僅輸入聲母、輸入聲母+聲調。
-  dependencies:
-    - terra_pinyin
 
 switches:
   - name: ascii_mode
     reset: 0
     states: [ 中文, 西文 ]
+    abbrev: [ 中, Ａ ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - name: simplification
-    states: [ 漢字, 汉字 ]
+  - options:
+      - zh_hant
+      - zh_hans
+      - zh_hant_hk
+      - zh_hant_tw
+    states:
+      - 傳統漢字
+      - 简化字
+      - 香港字形
+      - 臺灣字形
+    abbrev: [ 漢, 简, 港, 臺 ]
   - name: ascii_punct
-    states: [ 。，, ., ]
+    states: [ 。，, ．， ]
 
 engine:
   processors:
@@ -50,7 +58,9 @@ engine:
     - punct_translator
     - script_translator
   filters:
-    - simplifier
+    - simplifier@zh_hans
+    - simplifier@zh_hant_hk
+    - simplifier@zh_hant_tw
     - uniquifier
 
 speller:
@@ -243,3 +253,30 @@ punctuator:
 
 key_binder:
   import_preset: default
+
+recognizer:
+  import_preset: default
+
+zh_hans:
+  option_name: zh_hans
+  opencc_config: t2s.json
+  tips: all
+  excluded_types: [ reverse_lookup ]
+
+zh_hant_hk:
+  option_name: zh_hant_hk
+  opencc_config: t2hk.json
+  tips: none
+  excluded_types: [ reverse_lookup ]
+
+zh_hant_tw:
+  option_name: zh_hant_tw
+  opencc_config: t2tw.json
+  tips: none
+  excluded_types: [ reverse_lookup ]
+
+__patch:
+  # 使用八股文語言模型
+  - grammar:/hant?
+  # 用家自選配置
+  - detenele.custom:/patch?
