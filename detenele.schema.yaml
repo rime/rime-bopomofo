@@ -253,6 +253,10 @@ punctuator:
 
 key_binder:
   import_preset: default
+  bindings:
+    # 字形轉換
+    - { when: always, accept: Control+Shift+4, toggle: zh_hans }
+    - { when: always, accept: Control+Shift+dollar, toggle: zh_hans }
 
 recognizer:
   import_preset: default

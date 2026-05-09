@@ -197,6 +197,9 @@ key_binder:
     - { when: has_menu, accept: Shift+asterisk, send: KP_8 }
     - { when: has_menu, accept: Shift+parenleft, send: KP_9 }
     - { when: has_menu, accept: Shift+parenright, send: KP_0 }
+    # 字形轉換
+    - { when: always, accept: Control+Shift+4, toggle: zh_hans }
+    - { when: always, accept: Control+Shift+dollar, toggle: zh_hans }
 
 recognizer:
   patterns:
